@@ -1,0 +1,17 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "EvidentlyDemoEvaluateFeature",
+            "Effect": "Allow",
+            "Action": "evidently:EvaluateFeature",
+            "Resource": "arn:aws:evidently:us-west-2:0123456789:project/demo/feature/*"
+        },
+        {
+            "Sid": "EvidentlyDemoPutProjectsEvent",
+            "Effect": "Allow",
+            "Action": "evidently:PutProjectEvents",
+            "Resource": "arn:aws:evidently:us-west-2:0123456789:project/demo"
+        }
+    ]
+}

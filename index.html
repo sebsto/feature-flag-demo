@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+
+<html lang="en" style="height:100%">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+    <!-- Bootstrap CSS and JS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous">
+    </script>
+
+    <!-- JQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+
+    <!-- My code JS packaged by WebPack -->
+    <script src="dist/cognito.js"></script>
+    <script src="dist/evidently.js"></script>
+
+    <title>Amazon CloudWatch Evidently Demo</title>
+
+    <script>
+        $(document).ready( async () => {
+            // $('div#guestbook .card').toggleClass("bg-primary");
+
+            // wrapper to Cloudwatch Evidently
+            async function isFeatureActivated(entityId, featureName) {
+                const response = await EvidentlyDemo.evidently.evaluateFeature(entityId, featureName);
+                return response.value.boolValue;
+            }
+
+            $('div#guestbook-add').hide();
+
+            const userId = await EvidentlyDemo.cognito.showId();
+            console.log(`Cognito ID : ${userId}`);
+            // $('div#userId').replaceWith(`Cognito ID : ${userId}`);
+
+            // for demo use a random entity Id, 
+            // in real-life, we'll proobaly use user id 
+            let entityId = `user-${Math.floor(Math.random() * 100)}`;
+
+            // allow overrides with a queryString param easier for testing / demonstrating overrides)
+            const urlParams = new URLSearchParams(window.location.search);
+            const entityidOverride = urlParams.get('entityId')
+            if (entityidOverride != null) {
+                entityId = entityidOverride;
+            } 
+
+            const title = `Guestbook App (${entityId})`;
+            $('div#title').text(title);
+            console.log(`Going to query feature flag for ${entityId}`)
+
+            // call cloudwatch evidently to decide to diplay our new feature or not
+            if ( await isFeatureActivated(entityId, 'EditableGuestbook') ) {
+                console.log('Feature Flag is on, showing guest book');
+                $('div#guestbook-add').show();
+            } else {
+                console.log('Feature Flag is off, hiding guest book');
+                $('div#guestbook-add').hide();
+            }
+
+            // call cloudwatch evidently for A/B testing 
+            if (await  isFeatureActivated(entityId, 'GuestBookCardColor') ) {
+                console.log('Experiment Flag is on, using primary color (blue)');
+                $('div#guestbook .card').toggleClass("bg-primary");
+            } else {
+                console.log('Feature Flag is off, using secondary color (gray)');
+                $('div#guestbook .card').toggleClass("bg-secondary");
+            }
+
+            // send a custom metric when customer cicks the addCard button 
+            $('#addCardButton').click( async (event) => {
+                event.preventDefault();
+                console.log("addCard button clicked, sending custom metric to Evidently !");
+                await EvidentlyDemo.evidently.addCard(entityId, entityId);
+            });            
+        });
+            
+    
+    </script>
+</head>
+
+<body class="container">
+    <!-- <div id="userId">data</div> -->
+
+    <div id="guestbook">
+        <div id="title" class="display-5 mb-3">Super Guestbook App</div>
+        <div class="card text-white mb-3" style="max-width: 25rem;">
+            <div class="card-header">11 Aug. 2020</div>
+            <div class="card-body">
+                <h3 class="card-title">Message from Nata</h3>
+                <div class="card-text">This is a first guestbook message</div>
+            </div>
+        </div>
+        <div class="card text-white mb-3" style="max-width: 25rem;">
+            <div class="card-header">11 Oct. 2020</div>
+            <div class="card-body">
+                <h3 class="card-title">Message from Seb</h3>
+                <div class="card-text">This is a second guestbook message</div>
+            </div>
+        </div>
+    </div>
+    <div id="guestbook-add" style="max-width: 25rem;">
+        <h3>Add a new comment</h3>
+        <form method="post" action="/">
+            <div class="mb-3">
+                <label for="inputName" class="form-label">Name</label>
+                <input type="text" id="inputName" class="form-control"></input>
+            </div>
+            <div class="mb-3">
+                <label for="inputMessage" class="form-label">Message</label>
+                <textarea rows="3" id="inputMessage" class="form-control me-md-3"></textarea>
+            </div>
+            <div class="mb-3">
+                <button id="addCardButton" type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+
+    </div>
+</body>
+
+</html>
