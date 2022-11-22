@@ -1,4 +1,4 @@
-This is a very simple project to demonstrate Feature Flags with Amazon Cloudzwatch Evidently 
+This is a very simple project to demonstrate Feature Flags with Amazon CloudWatch Evidently 
 https://aws.amazon.com/blogs/aws/cloudwatch-evidently/
 
 This demo how to use feature flags in your code for two use cases : launch control and experiment (A/B Testing).
