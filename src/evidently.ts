@@ -23,6 +23,7 @@ const REGION = "us-west-2";
 const evaluateFeature = async (entityId: string): Promise<EvaluateFeatureCommandOutput> => {
 
   const credentials = await awsCredentialsForAnonymousUser({
+    region: REGION,
     identityPoolId: 'us-west-2:3109c9f1-7857-4cbf-be91-c867a00768e0',
     cognitoUnauthenticatedRole: 'arn:aws:iam::486652066693:role/Cognito_evidentlydemoUnauth_Role'
   });

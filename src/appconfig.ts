@@ -44,6 +44,7 @@ class AppConfigRetriever {
     async getFeatureFlagConfig(application: string, environment: string, configuration: string): Promise<any> {
 
         const credentials = await awsCredentialsForAnonymousUser({
+            region: 'eu-west-1',
             identityPoolId: 'eu-west-1:15a24313-b58a-4815-b78f-b1ad3691a6f3',
             cognitoUnauthenticatedRole: 'arn:aws:iam::419072201833:role/Cognito_reInventdemoUnauth_Role'
         });
