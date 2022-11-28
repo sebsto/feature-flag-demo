@@ -5,13 +5,15 @@ module.exports = {
     // Specify the entry point for our app.
     entry: {
       evidently : path.join(__dirname, "src/evidently.ts"), 
-      cognito : path.join(__dirname, "src/cognito.ts")
+      cognito : path.join(__dirname, "src/cognito.ts"),
+      appconfig : path.join(__dirname, "src/appconfig.ts")
     },
 
     // Specify the output file containing our bundled code.
     output: {
         path: path.resolve(__dirname, "dist"),
         filename: '[name].js',
+        libraryTarget: "var",
         library: ['EvidentlyDemo', '[name]']
     },
 

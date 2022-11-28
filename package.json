@@ -1,7 +1,8 @@
 {
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack"
+    "build": "webpack",
+    "serve": "webpack --watch"
   },
   "devDependencies": {
     "path-browserify": "^1.0.1",
@@ -10,11 +11,16 @@
     "webpack-cli": "^4.9.2"
   },
   "dependencies": {
+    "@aws-sdk/client-appconfig": "^3.204.0",
+    "@aws-sdk/client-appconfigdata": "^3.213.0",
     "@aws-sdk/client-cognito-identity": "^3.92.0",
     "@aws-sdk/client-evidently": "^3.92.0",
     "@aws-sdk/client-sts": "^3.95.0",
     "@aws-sdk/credential-provider-cognito-identity": "^3.92.0",
     "@aws-sdk/credential-providers": "^3.95.0",
-    "@aws-sdk/types": "^3.78.0"
+    "@aws-sdk/types": "^3.78.0",
+    "buffer": "^6.0.3",
+    "node-cache": "^5.1.2",
+    "typescript": "^4.9.3"
   }
 }
